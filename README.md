@@ -1,2 +1,4 @@
 # cancelable-axios-utils
-Created with CodeSandbox
+
+
+> Inspired by [cancelable promise](https://github.com/facebook/react/issues/5465#issuecomment-157888325)
