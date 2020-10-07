@@ -3,8 +3,8 @@ import { makeCancelableGet } from './utils';
 
 const Fish = function Fish() {
   const [fish, setFish] = useState(() => {});
-  const [count, setCount] = useState(() => 0);
-  const [refetchID, setID] = useState(() => 0);
+  const [isLoading, setLoading] = useState(() => false);
+  const [fishId, setID] = useState(() => 1);
   const reFetch = () => {
     setID((id) => id + 1);
   };
@@ -13,31 +13,33 @@ const Fish = function Fish() {
     console.log('exec');
     let unmount = () => {};
     function fetchFish() {
+      setLoading(true);
       const { request, cancel } = makeCancelableGet({
-        url: 'https://acnhapi.com/v1/fish',
+        url: 'https://acnhapi.com/v1a/fish/' + fishId,
       });
-
       request
         .then((res) => {
-          setFish(res.data.bitterling);
-          setCount((c) => c + 1);
+          setFish(res.data);
+          setLoading(false);
         })
         .catch((error) => {
           console.log(error);
+          if (error.message !== 'hasCanceled') {
+            setLoading(false);
+          }
         });
       unmount = cancel;
     }
     fetchFish();
 
     return unmount;
-  }, [refetchID]);
+  }, [fishId]);
 
   return (
     <div className="App">
-      <button onClick={reFetch}>Refetch</button>
+      <button onClick={reFetch}>Next fish</button>
       <br />
-      {count}
-      <pre>{JSON.stringify(fish, null, 2)}</pre>
+      {isLoading ? <pre>Loading...</pre> : <pre>{JSON.stringify(fish, null, 2)}</pre>}
     </div>
   );
 };
@@ -46,7 +48,7 @@ export default function App() {
   const [k, setK] = useState(() => 0);
   return (
     <div>
-      <button onClick={() => setK((k) => k + 1)}>Test</button>
+      <button onClick={() => setK((k) => k + 1)}>Reset</button>
       <Fish key={k} />
     </div>
   );
