@@ -1,7 +1,7 @@
-import Axios, { AxiosRequestConfig } from 'axios';
+import Axios from 'axios';
 
 /**
- * @param {{ url: string, config?: AxiosRequestConfig }} param0
+ * @param {{ url: string, config?: import('axios').AxiosRequestConfig }} param0
  */
 export const makeCancelableGet = ({ url, config }) => {
   let hasCanceled_ = false;
