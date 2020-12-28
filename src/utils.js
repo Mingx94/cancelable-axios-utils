@@ -14,12 +14,11 @@ export const makeCancelableGet = ({ url, config }) => {
       ? Promise.reject({ message: 'hasCanceled' })
       : Promise.reject(error);
   });
-
-  return {
-    request,
-    cancel() {
+  
+  request.cancel = () => {
       hasCanceled_ = true;
-      source.cancel('Canceled');
-    },
-  };
+      source.cancel('Canceled');    
+  }
+
+  return request;
 };
