@@ -1,24 +1,27 @@
-import Axios from 'axios';
+import Axios from "axios";
 
 /**
- * @param {{ url: string, config?: import('axios').AxiosRequestConfig }} param0
+ * @param {import('axios').AxiosRequestConfig } config
  */
-export const makeCancelableGet = ({ url, config }) => {
-  let hasCanceled_ = false;
+const api = (method, url, config) => {
   const source = Axios.CancelToken.source();
-  const request = Axios.get(url, {
+  const request = Axios({
     ...config,
-    cancelToken: source.token,
-  }).catch((error) => {
-    return hasCanceled_
-      ? Promise.reject({ message: 'hasCanceled' })
-      : Promise.reject(error);
+    method,
+    url,
+    cancelToken: source.token
   });
-  
-  request.cancel = () => {
-      hasCanceled_ = true;
-      source.cancel('Canceled');    
-  }
+
+  request.cancel = (message) => {
+    source.cancel(message);
+  };
 
   return request;
+};
+
+export default {
+  get: (...args) => api("get", ...args),
+  post: (...args) => api("post", ...args),
+  put: (...args) => api("put", ...args),
+  delete: (...args) => api("delete", ...args)
 };

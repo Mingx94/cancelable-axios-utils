@@ -1,5 +1,6 @@
+import Axios from "axios";
 import React, { useEffect, useState } from "react";
-import { makeCancelableGet } from "./utils";
+import api from "./utils";
 
 const Fish = function Fish() {
   const [fish, setFish] = useState(() => {});
@@ -10,21 +11,17 @@ const Fish = function Fish() {
   };
 
   useEffect(() => {
-    console.log("exec");
     let unmount = () => {};
     function fetchFish() {
       setLoading(true);
-      const request = makeCancelableGet({
-        url: "https://acnhapi.com/v1a/fish/" + fishId
-      });
+      const request = api.get("https://acnhapi.com/v1a/fish/" + fishId);
       request
         .then((res) => {
           setFish(res.data);
           setLoading(false);
         })
         .catch((error) => {
-          console.log(error);
-          if (error.message !== "hasCanceled") {
+          if (!Axios.isCancel(error)) {
             setLoading(false);
           }
         });
@@ -49,7 +46,7 @@ const Fish = function Fish() {
 };
 
 export default function App() {
-  const [k, setK] = useState(() => 0);
+  const [k, setK] = useState(0);
   return (
     <div>
       <button onClick={() => setK((k) => k + 1)}>Reset</button>
