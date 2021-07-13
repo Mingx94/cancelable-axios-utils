@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { makeCancelableGet } from './utils';
+import React, { useEffect, useState } from "react";
+import { makeCancelableGet } from "./utils";
 
 const Fish = function Fish() {
   const [fish, setFish] = useState(() => {});
@@ -10,12 +10,12 @@ const Fish = function Fish() {
   };
 
   useEffect(() => {
-    console.log('exec');
+    console.log("exec");
     let unmount = () => {};
     function fetchFish() {
       setLoading(true);
-      const { request, cancel } = makeCancelableGet({
-        url: 'https://acnhapi.com/v1a/fish/' + fishId,
+      const request = makeCancelableGet({
+        url: "https://acnhapi.com/v1a/fish/" + fishId
       });
       request
         .then((res) => {
@@ -24,11 +24,11 @@ const Fish = function Fish() {
         })
         .catch((error) => {
           console.log(error);
-          if (error.message !== 'hasCanceled') {
+          if (error.message !== "hasCanceled") {
             setLoading(false);
           }
         });
-      unmount = cancel;
+      unmount = request.cancel;
     }
     fetchFish();
 
@@ -39,7 +39,11 @@ const Fish = function Fish() {
     <div className="App">
       <button onClick={reFetch}>Next fish</button>
       <br />
-      {isLoading ? <pre>Loading...</pre> : <pre>{JSON.stringify(fish, null, 2)}</pre>}
+      {isLoading ? (
+        <pre>Loading...</pre>
+      ) : (
+        <pre>{JSON.stringify(fish, null, 2)}</pre>
+      )}
     </div>
   );
 };
